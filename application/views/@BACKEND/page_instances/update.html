@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Linode</title>
+</head>
+<body>
+    <h1>Edit Linode</h1>
+    <form action="<?php echo site_url('linode/edit/' . $linode['id']); ?>" method="post">
+        <label for="label">Label:</label>
+        <input type="text" name="label" value="<?php echo $linode['label']; ?>" required><br>
+        <label for="region">Region:</label>
+        <input type="text" name="region" value="<?php echo $linode['region']; ?>" required><br>
+        <label for="type">Type:</label>
+        <input type="text" name="type" value="<?php echo $linode['type']; ?>" required><br>
+        <input type="submit" value="Update">
+    </form>
+    <a href="<?php echo site_url('linode'); ?>">Back to List</a>
+</body>
+</html>

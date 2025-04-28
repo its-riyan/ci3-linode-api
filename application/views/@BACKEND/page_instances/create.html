@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Linode</title>
+</head>
+<body>
+
+    <h1>Create a New Linode Instance</h1>
+    <form action="<?php echo site_url('linode/create'); ?>" method="POST">
+        <div class="form-group">
+            <label for="label">Label:</label>
+            <input type="text" id="label" name="label" required>
+        </div>
+
+        <div class="form-group">
+            <label for="region">Region (Country):</label>
+            <select id="region" name="region" required>
+                <option value="">Select Region</option>
+                <?php if (!empty($regions)) : ?>
+                    <?php foreach ($regions as $region) : ?>
+                        <option value="<?php echo $region['id']; ?>">
+                            <?php echo $region['label']; ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="type">Machine Type:</label>
+            <select id="type" name="type" required>
+                <option value="">Select Machine Type</option>
+                <?php if (!empty($types)) : ?>
+                    <?php foreach ($types as $type) : ?>
+                    <option value="<?= $type['id']; ?>">
+                        <?= $type['label']; ?> - 
+                        CPUs: <?= $type['vcpus']; ?>, 
+                        Memory: <?= $type['memory']; ?> MB, 
+                        Storage: <?= $type['disk']; ?> MB, 
+                        Transfer: <?= $type['transfer']; ?> MB, 
+                        Price: $<?= isset($type['prices'][0][0]) ? $type['prices'][0][0] : 'N/A'; ?> / hr
+                    </option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="image">Operating System/Image:</label>
+            <select id="image" name="image" required>
+                <option value="">Select Operating System</option>
+                <?php if (!empty($images)) : ?>
+                    <?php foreach ($images as $image) : ?>
+                        <option value="<?php echo $image['id']; ?>">
+                            <?php echo $image['label']; ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Create Linode">
+        </div>
+    </form>
+
+    <a href="<?php echo site_url('instances'); ?>" class="btn-secondary">Back to Linodes</a>
+    
+</body>
+</html>
