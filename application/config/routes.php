@@ -54,7 +54,7 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['instances'] = 'linode_controller/instances';
-$route['create'] = 'linode_controller/create';
+$route['create'] = 'linode_controller/create_instance';
 $route['edit/(:any)'] = 'linode_controller/edit/$1';
 $route['delete/(:any)'] = 'linode_controller/delete/$1';
 $route['reboot/(:any)'] = 'linode_controller/reboot/$1';

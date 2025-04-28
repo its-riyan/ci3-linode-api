@@ -1,425 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linode Instances</title>
+    <title>Linode Instances List</title>
     <style>
-        .details {
-            display: none;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            padding: 10px;
-            background-color: #f9f9f9;
-        }
-        .toggle-details {
-            cursor: pointer;
-            color: blue;
-            text-decoration: underline;
-        }
-        canvas {
-            width: 100%;
-            height: 200px;
-            margin: 20px 0;
-        }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background-color: #f2f2f2; }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-     <!-- last 24h -->
-     
-    <script>
-        const generateRandomData = (length) => {
-            return Array.from({ length }, () => Math.floor(Math.random() * 100));
-        };
-
-        function toggleDetails(id) {
-            const details = document.getElementById(id);
-            if (details.style.display === "none") {
-                details.style.display = "block";
-                createCharts(id.split('-')[1]); // Pass the Linode ID to create charts
-            } else {
-                details.style.display = "none";
-                destroyCharts(id.split('-')[1]); // Clean up charts if necessary
-            }
-        }
-
-        function createCharts(instanceId) {
-            const labels = Array.from({ length: 24 }, (_, i) => {
-                const date = new Date();
-                date.setHours(date.getHours() - (24 - i)); // Previous 24 hours
-                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            });
-
-            // Generate random data for demonstration
-            const cpuData = generateRandomData(24);
-            const diskData = generateRandomData(24);
-            const networkData = generateRandomData(24);
-
-            // Create charts for CPU
-            const cpuCtx = document.getElementById(`cpuChart-${instanceId}`);
-            if (cpuCtx) {
-                new Chart(cpuCtx.getContext('2d'), {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'CPU Usage (%)',
-                            data: cpuData,
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Usage (%)'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Time'
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Create charts for Disk
-            const diskCtx = document.getElementById(`diskChart-${instanceId}`);
-            if (diskCtx) {
-                new Chart(diskCtx.getContext('2d'), {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Disk Usage (%)',
-                            data: diskData,
-                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Usage (%)'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Time'
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Create charts for Network
-            const networkCtx = document.getElementById(`networkChart-${instanceId}`);
-            if (networkCtx) {
-                new Chart(networkCtx.getContext('2d'), {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Network Usage (Mbps)',
-                            data: networkData,
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Usage (Mbps)'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Time'
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-        }
-
-        function destroyCharts(instanceId) {
-            // Logic to destroy existing charts if needed
-        }
-    </script>
- 
-
-
-    <!-- last 10seconds 
-    <script>
-        let cpuChart, diskChart, networkChart;
-        const labels = [];
-        const cpuData = [];
-        const diskData = [];
-        const networkData = [];
-        let updateInterval;
-
-        const generateRandomData = () => [
-            Math.floor(Math.random() * 100), // CPU Usage
-            Math.floor(Math.random() * 100), // Disk Usage
-            Math.floor(Math.random() * 100)  // Network Usage
-        ];
-
-        function toggleDetails(id) {
-            const details = document.getElementById(id);
-            if (details.style.display === "none") {
-                details.style.display = "block";
-                createCharts(id.split('-')[1]); // Pass the Linode ID to create charts
-            } else {
-                details.style.display = "none";
-                clearInterval(updateInterval);
-                destroyCharts(id.split('-')[1]); // Clean up charts if necessary
-            }
-        }
-
-        function createCharts(instanceId) {
-            // Initialize labels and data arrays if not already done
-            if (labels.length === 0) {
-                for (let i = 0; i < 24; i++) {
-                    labels.push(''); // Initially empty
-                }
-            }
-
-            const ctxCpu = document.getElementById(`cpuChart-${instanceId}`).getContext('2d');
-            const ctxDisk = document.getElementById(`diskChart-${instanceId}`).getContext('2d');
-            const ctxNetwork = document.getElementById(`networkChart-${instanceId}`).getContext('2d');
-
-            cpuChart = new Chart(ctxCpu, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'CPU Usage (%)',
-                        data: cpuData,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Usage (%)'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Time'
-                            }
-                        }
-                    }
-                }
-            });
-
-            diskChart = new Chart(ctxDisk, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Disk Usage (%)',
-                        data: diskData,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Usage (%)'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Time'
-                            }
-                        }
-                    }
-                }
-            });
-
-            networkChart = new Chart(ctxNetwork, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Network Usage (Mbps)',
-                        data: networkData,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Usage (Mbps)'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Time'
-                            }
-                        }
-                    }
-                }
-            });
-            
-            // Start real-time updates
-            startRealTimeUpdates(instanceId);
-        }
-
-        // Function to update the charts every 10 seconds
-        function startRealTimeUpdates(instanceId) {
-            updateInterval = setInterval(() => {
-                // Generate random data simulating real-time behavior
-                const newData = generateRandomData();
-                const now = new Date();
-
-                // Update charts with new data
-                updateChart(cpuChart, newData[0]);
-                updateChart(diskChart, newData[1]);
-                updateChart(networkChart, newData[2]);
-
-                // Update the time labels
-                labels.push(now.toLocaleTimeString());
-                if (labels.length > 24) labels.shift(); // Keep only the last 24 time labels
-            }, 10000); // 10 seconds interval
-        }
-
-        function updateChart(chart, newValue) {
-            // Add new data point to the data array
-            if (chart.data.datasets[0].data.length >= 24) {
-                chart.data.datasets[0].data.shift(); // Remove the first data point
-            }
-            chart.data.datasets[0].data.push(newValue); // Add new data
-
-            chart.update(); // Redraw the chart
-        }
-
-        function destroyCharts(instanceId) {
-            // Destroy existing charts
-            if (cpuChart) cpuChart.destroy();
-            if (diskChart) diskChart.destroy();
-            if (networkChart) networkChart.destroy();
-        }
-    </script>
-    -->
-
 </head>
 <body>
     <h1>Linode Instances</h1>
-    <a href="<?php echo site_url('create'); ?>">Create New Linode</a>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Label</th>
-            <th>Status</th>
-            <th>Region</th>
-            <th>Actions</th>
-        </tr>
-        <?php if (!empty($linodes['data'])): ?>
-            <?php foreach ($linodes['data'] as $linode): ?>
+    <?php if (isset($instances) && count($instances) > 0): ?>
+        <table>
+            <thead>
                 <tr>
-                    <td><?php echo $linode['id']; ?></td>
-                    <td>
-                        <?php echo $linode['label']; ?>
-                        <span class="toggle-details" onclick="toggleDetails('details-<?php echo $linode['id']; ?>')">[Toggle Details]</span>
-                    </td>
-                    <td><?php echo $linode['status']; ?></td>
-                    <td><?php echo $linode['region']; ?></td>
-                    <td>
-                        <a href="<?php echo site_url('linode/edit/' . $linode['id']); ?>">Edit</a>
-                        <!-- <a href="<?php echo site_url('linode/delete/' . $linode['id']); ?>" onclick="return confirm('Are you sure you want to delete this Linode?');">Delete</a> -->
-                        <a href="<?php echo site_url('linode/reboot/' . $linode['id']); ?>" onclick="return confirm('Are you sure you want to reboot this Linode?');">Reboot</a>
-                    </td>
+                    <th>ID</th>
+                    <th>Label</th>
+                    <th>Region</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>IPv4</th>
+                    <th>IPv6</th>
+                    <th>Price (Monthly)</th>
+                    <th>Price (Hourly)</th>
                 </tr>
-                <tr id="details-<?php echo $linode['id']; ?>" class="details">
-                    <td colspan="5">
-                        <strong>Linode Details:</strong><br>
-                        <u>Specifications:</u><br>
-                        <strong>Cores:</strong> 
-                        <?php echo isset($linode['specs']['vcpus']) ? $linode['specs']['vcpus'] : 'N/A'; ?><br>
-                        <strong>RAM:</strong> 
-                        <?php echo isset($linode['specs']['memory']) ? $linode['specs']['memory'] : 'N/A'; ?> GB<br>
-                        <strong>Storage:</strong> 
-                        <?php echo isset($linode['specs']['disk']) ? $linode['specs']['disk'] : 'N/A'; ?> GB<br>
-                        
-                        <strong>Volumes:</strong> 
-                        <?php 
-                        if (isset($linode['volumes']) && is_array($linode['volumes']) && !empty($linode['volumes'])) {
-                            echo implode(', ', array_column($linode['volumes'], 'label')); 
-                        } else {
-                            echo 'No volumes attached';
-                        } 
-                        ?><br>
-
-                        <strong>Encrypted:</strong> 
-                        <?php 
-                        if (isset($linode['volumes']) && is_array($linode['volumes']) && !empty($linode['volumes'])) {
-                            echo $linode['volumes'][0]['encrypted'] ? 'Yes' : 'No'; 
-                        } else {
-                            echo 'N/A';
-                        }
-                        ?><br>
-
-                        <u>Network Configuration:</u><br>
-                        <strong>Public IP Address(es):</strong> 
-                        <?php echo implode(', ', $linode['ipv4']); ?><br>
-                        <strong>Command:</strong> 
-                        <code>ssh root@<?php echo $linode['ipv4'][0]; ?></code><br>
-                        <u>Summary:</u><br>
-                        <strong>Plan:</strong> <?php echo isset($linode['plan']) ? $linode['plan'] : 'N/A'; ?><br>
-                        <strong>Linode ID:</strong> <?php echo $linode['id']; ?><br>
-                        <strong>Created Date:</strong> <?php echo date('Y-m-d H:i:s', strtotime($linode['created'])); ?><br>
-
-                        <!-- Add the charts here -->
-                        <canvas id="cpuChart-<?php echo $linode['id']; ?>"></canvas>
-                        <canvas id="diskChart-<?php echo $linode['id']; ?>"></canvas>
-                        <canvas id="networkChart-<?php echo $linode['id']; ?>"></canvas>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr>
-                <td colspan="5">No Linode instances found.</td>
-            </tr>
-        <?php endif; ?>
-    </table>
+            </thead>
+            <tbody>
+                <?php foreach ($instances as $instance): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($instance['id']); ?></td>
+                        <td><?php echo htmlspecialchars($instance['label']); ?></td>
+                        <td><?php echo htmlspecialchars($instance['region']); ?></td>
+                        <td><?php echo htmlspecialchars($instance['type']); ?></td>
+                        <td><?php echo htmlspecialchars($instance['status']); ?></td>
+                        <td>
+                            <?php
+                                if (isset($instance['ipv4']) && is_array($instance['ipv4'])) {
+                                    echo implode(', ', $instance['ipv4']);
+                                }
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                                if (isset($instance['ipv6']) && is_string($instance['ipv6'])) {
+                                    echo $instance['ipv6'];
+                                }
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                                echo isset($instance['type_details']['price']['monthly']) 
+                                    ? '$' . number_format($instance['type_details']['price']['monthly'], 2) 
+                                    : '-';
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                                echo isset($instance['type_details']['price']['hourly']) 
+                                    ? '$' . number_format($instance['type_details']['price']['hourly'], 4) 
+                                    : '-';
+                            ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p>No Linode instances found.</p>
+    <?php endif; ?>
 </body>
 </html>

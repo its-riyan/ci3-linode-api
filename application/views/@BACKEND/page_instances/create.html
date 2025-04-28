@@ -1,72 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Linode</title>
+    <title>Create Linode Instance</title>
 </head>
 <body>
+    <h1>Create Linode Instance</h1>
 
-    <h1>Create a New Linode Instance</h1>
-    <form action="<?php echo site_url('linode/create'); ?>" method="POST">
-        <div class="form-group">
-            <label for="label">Label:</label>
-            <input type="text" id="label" name="label" required>
-        </div>
+    <?php echo validation_errors(); ?>
+    <?php if (isset($error)) echo '<p style="color:red;">' . $error . '</p>'; ?>
+    <?php echo form_open('linode/create'); ?>
 
-        <div class="form-group">
-            <label for="region">Region (Country):</label>
-            <select id="region" name="region" required>
-                <option value="">Select Region</option>
-                <?php if (!empty($regions)) : ?>
-                    <?php foreach ($regions as $region) : ?>
-                        <option value="<?php echo $region['id']; ?>">
-                            <?php echo $region['label']; ?>
-                        </option>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </select>
-        </div>
+    <p>
+        <label for="region">Region:</label><br>
+        <select name="region">
+            <option value="">-- Select Region --</option>
+            <?php foreach ($regions as $region): ?>
+                <option value="<?php echo $region['id']; ?>" <?php echo set_select('region', $region['id']); ?>>
+                    <?php echo $region['id'] . ' (' . $region['country'] . ')'; ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </p>
 
-        <div class="form-group">
-            <label for="type">Machine Type:</label>
-            <select id="type" name="type" required>
-                <option value="">Select Machine Type</option>
-                <?php if (!empty($types)) : ?>
-                    <?php foreach ($types as $type) : ?>
-                    <option value="<?= $type['id']; ?>">
-                        <?= $type['label']; ?> - 
-                        CPUs: <?= $type['vcpus']; ?>, 
-                        Memory: <?= $type['memory']; ?> MB, 
-                        Storage: <?= $type['disk']; ?> MB, 
-                        Transfer: <?= $type['transfer']; ?> MB, 
-                        Price: $<?= isset($type['prices'][0][0]) ? $type['prices'][0][0] : 'N/A'; ?> / hr
-                    </option>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </select>
-        </div>
+    <p>
+        <label for="type">Type:</label><br>
+        <select name="type">
+            <option value="">-- Select Type --</option>
+            <?php foreach ($types as $type): ?>
+                <option value="<?php echo $type['id']; ?>" <?php echo set_select('type', $type['id']); ?>>
+                    <?php echo $type['label'] . ' (' . $type['memory'] . 'MB RAM, ' . $type['vcpus'] . ' vCPUs, ' . $type['disk'] . 'MB SSD)'; ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </p>
 
-        <div class="form-group">
-            <label for="image">Operating System/Image:</label>
-            <select id="image" name="image" required>
-                <option value="">Select Operating System</option>
-                <?php if (!empty($images)) : ?>
-                    <?php foreach ($images as $image) : ?>
-                        <option value="<?php echo $image['id']; ?>">
-                            <?php echo $image['label']; ?>
-                        </option>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </select>
-        </div>
+    <p>
+        <label for="image">Image:</label><br>
+        <select name="image">
+            <option value="">-- Select Image --</option>
+            <?php foreach ($images as $image): ?>
+                <option value="<?php echo $image['id']; ?>" <?php echo set_select('image', $image['id']); ?>>
+                    <?php echo $image['label'] . ' (' . $image['id'] . ')'; ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </p>
 
-        <div class="form-group">
-            <input type="submit" value="Create Linode">
-        </div>
-    </form>
+    <p>
+        <label for="root_pass">Root Password:</label><br>
+        <input type="password" name="root_pass" />
+    </p>
 
-    <a href="<?php echo site_url('instances'); ?>" class="btn-secondary">Back to Linodes</a>
-    
+    <p>
+        <button type="submit">Create Instance</button>
+    </p>
+
+    <?php echo form_close(); ?>
 </body>
 </html>
