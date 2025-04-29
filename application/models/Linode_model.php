@@ -9,7 +9,7 @@ use GuzzleHttp\Exception\RequestException;
 class Linode_model extends CI_Model {
 
     private $client;
-    private $api_token = 'f0d6749cf7fe66dae033caa5441f632a1b4a654a3d31f72979a2acdb2895b8bc'; // Replace with your actual token
+    private $api_token = '20c42d045f10f06529d56cd399b9050ea38f07adb42ee1f0c06ecab29dcd4e5e'; // Replace with your actual token
 
     public function __construct() {
         parent::__construct();
