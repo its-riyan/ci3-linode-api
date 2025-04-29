@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>Create Linode Instance</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
 </head>
 <body>
     <h1>Create Linode Instance</h1>
@@ -12,11 +14,11 @@
 
     <p>
         <label for="region">Region:</label><br>
-        <select name="region">
+        <select name="region" onchange="get_type(this.value);">
             <option value="">-- Select Region --</option>
             <?php foreach ($regions as $region): ?>
-                <option value="<?php echo $region['id']; ?>" <?php echo set_select('region', $region['id']); ?>>
-                    <?php echo $region['id'] . ' (' . $region['country'] . ')'; ?>
+                <option value="<?php echo $region['plan']; ?>">
+                    <?php echo $region['region'] . ' (' . $region['plan'] . ')'; ?>
                 </option>
             <?php endforeach; ?>
         </select>
@@ -24,13 +26,7 @@
 
     <p>
         <label for="type">Type:</label><br>
-        <select name="type">
-            <option value="">-- Select Type --</option>
-            <?php foreach ($types as $type): ?>
-                <option value="<?php echo $type['id']; ?>" <?php echo set_select('type', $type['id']); ?>>
-                    <?php echo $type['label'] . ' (' . $type['memory'] . 'MB RAM, ' . $type['vcpus'] . ' vCPUs, ' . $type['disk'] . 'MB SSD)'; ?>
-                </option>
-            <?php endforeach; ?>
+        <select name="type" id="linode-options">
         </select>
     </p>
 
@@ -56,5 +52,20 @@
     </p>
 
     <?php echo form_close(); ?>
+
+    <script>
+
+        function get_type(val) {
+            $("#linode-options").empty();
+            var data = <?php echo json_encode($types); ?>;
+            var selectElement = $("#linode-options");
+            var linode = data.find(item => item.id === val);
+            linode.region_prices.forEach(region => {
+                selectElement.append(
+                    `<option value="${region.id}">${linode.label} - ${region.id} ($${region.monthly} per month)</option>`
+                );
+            });
+        }
+    </script>
 </body>
 </html>

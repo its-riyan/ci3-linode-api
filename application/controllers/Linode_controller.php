@@ -21,6 +21,8 @@ class Linode_controller extends CI_Controller {
             }
             $instance['type_details'] = $type_cache[$type_id];
         }
+
+        $instance['invoicesss'] = $this->linode_model->get_invoices();
     
         $this->load->view('@BACKEND/page_instances/view.html', ['instances' => $instances]);
     }

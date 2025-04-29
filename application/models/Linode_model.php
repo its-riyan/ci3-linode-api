@@ -25,7 +25,7 @@ class Linode_model extends CI_Model {
 
     public function get_regions() {
         try {
-            $response = $this->client->get('regions');
+            $response = $this->client->get('regions/availability');
             $data = json_decode($response->getBody(), true);
             return $data['data'];
         } catch (\Exception $e) {
@@ -84,6 +84,19 @@ class Linode_model extends CI_Model {
     public function get_instances() {
         try {
             $response = $this->client->get('linode/instances');
+            $data = json_decode($response->getBody(), true);
+            return $data['data'];  // List of instances
+        } catch (\Exception $e) {
+            log_message('error', 'Linode API get_instances: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+
+
+    public function get_invoices() {
+        try {
+            $response = $this->client->get('account/invoices');
             $data = json_decode($response->getBody(), true);
             return $data['data'];  // List of instances
         } catch (\Exception $e) {

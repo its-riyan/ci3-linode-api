@@ -23,45 +23,55 @@
                     <th>IPv6</th>
                     <th>Price (Monthly)</th>
                     <th>Price (Hourly)</th>
+                    <th>Invoice</th>
+                    <th>Date</th>
+                    <th>Total</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($instances as $instance): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($instance['id']); ?></td>
-                        <td><?php echo htmlspecialchars($instance['label']); ?></td>
-                        <td><?php echo htmlspecialchars($instance['region']); ?></td>
-                        <td><?php echo htmlspecialchars($instance['type']); ?></td>
-                        <td><?php echo htmlspecialchars($instance['status']); ?></td>
-                        <td>
-                            <?php
-                                if (isset($instance['ipv4']) && is_array($instance['ipv4'])) {
-                                    echo implode(', ', $instance['ipv4']);
-                                }
-                            ?>
-                        </td>
-                        <td>
-                            <?php
-                                if (isset($instance['ipv6']) && is_string($instance['ipv6'])) {
-                                    echo $instance['ipv6'];
-                                }
-                            ?>
-                        </td>
-                        <td>
-                            <?php
-                                echo isset($instance['type_details']['price']['monthly']) 
-                                    ? '$' . number_format($instance['type_details']['price']['monthly'], 2) 
-                                    : '-';
-                            ?>
-                        </td>
-                        <td>
-                            <?php
-                                echo isset($instance['type_details']['price']['hourly']) 
-                                    ? '$' . number_format($instance['type_details']['price']['hourly'], 4) 
-                                    : '-';
-                            ?>
-                        </td>
-                    </tr>
+                <?php 
+                foreach ($instances as $instance):
+                $lastInvoice = end($instances[1]['invoicesss']);
+                ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($instance['id']); ?></td>
+                    <td><?php echo htmlspecialchars($instance['label']); ?></td>
+                    <td><?php echo htmlspecialchars($instance['region']); ?></td>
+                    <td><?php echo htmlspecialchars($instance['type']); ?></td>
+                    <td><?php echo htmlspecialchars($instance['status']); ?></td>
+                    <td>
+                        <?php
+                            if (isset($instance['ipv4']) && is_array($instance['ipv4'])) {
+                                echo implode(', ', $instance['ipv4']);
+                            }
+                        ?>
+                    </td>
+                    <td>
+                        <?php
+                            if (isset($instance['ipv6']) && is_string($instance['ipv6'])) {
+                                echo $instance['ipv6'];
+                            }
+                        ?>
+                    </td>
+                    <td>
+                        <?php
+                            echo isset($instance['type_details']['price']['monthly']) 
+                                ? '$' . number_format($instance['type_details']['price']['monthly'], 2) 
+                                : '-';
+                        ?>
+                    </td>
+                    <td>
+                        <?php
+                            echo isset($instance['type_details']['price']['hourly']) 
+                                ? '$' . number_format($instance['type_details']['price']['hourly'], 4) 
+                                : '-';
+                        ?>
+                    </td>
+                    <td><?php echo htmlspecialchars($lastInvoice['label']); ?></td>
+                    <td><?php echo date('d F Y', strtotime($lastInvoice['date'])); ?></td>
+                    <td>$<?php echo number_format($lastInvoice['total'], 2, ".", ","); ?></td>
+                </tr>
+                    
                 <?php endforeach; ?>
             </tbody>
         </table>
